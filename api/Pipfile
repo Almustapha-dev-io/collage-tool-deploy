@@ -9,6 +9,7 @@ celery = {extras = ["redis"], version = "*"}
 python-dotenv = "*"
 pillow = "*"
 flask-cors = "*"
+gunicorn = "*"
 
 [dev-packages]
 autopep8 = "*"

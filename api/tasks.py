@@ -112,7 +112,7 @@ def delete_temp_images(files):
     with ThreadPoolExecutor() as executor:
         results = executor.map(delete_img, files)
         for result in results:
-            print(f"{result} resized!")
+            print(result)
 
 
 @celery_app.task
@@ -140,20 +140,22 @@ def combine_images(files, file_id, border, border_color, orientation):
 
     delete_temp_images.delay(files)
     new_image.save(os.path.join(results_dir, f"{file_id}.png"), "png")
+    
+    return file_id
 
 
 @celery_app.task
 def process_tasks(files, border, border_color, orientation):
     file_id = uuid4()
-    res = resize_images.apply_async(
-        (files, orientation),
-        link=combine_images.s(
+    chain(
+        resize_images.s(files, orientation) |
+        combine_images.s(
             file_id,
             border,
             border_color,
             orientation
         )
-    )
+    ).apply_async()
 
     return file_id
 

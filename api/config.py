@@ -4,7 +4,6 @@ from helpers import create_dir
 temp_image_dir = create_dir("images")
 results_dir = create_dir("resized")
 
-
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "asupersecretsecret")
     ENV = os.environ.get("FLASK_ENV", "development")
